@@ -124,6 +124,7 @@ public class Enemy : MonoBehaviour
             Health -= 5 * _burnStack;
         }
         _burnStack = 0;
+        _burnActive = false;
 
         yield return null;
     }
@@ -176,7 +177,7 @@ public class Enemy : MonoBehaviour
         while (scale <= 0.5f)
         {
             yield return new WaitForSeconds(0.01f);
-            transform.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, scale);
+            transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, scale);
             scale += 0.01f;
         }
         Health = 0;
