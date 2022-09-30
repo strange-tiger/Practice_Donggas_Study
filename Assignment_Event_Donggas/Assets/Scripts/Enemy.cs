@@ -1,142 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-#region FSM
-    public enum EPlayerState
+    public enum EEnemyState
     {
-        IDLE,
         BURN,
         POISONED,
         CURSED,
         MAX,
     }
 
-    class FSM
-    {
-        private Dictionary<EPlayerState, State> _dicState;
-        State _curState = null;
-
-        public void Init()
-        {
-            _dicState = new Dictionary<EPlayerState, State>();
-        }
-
-        public void OnUpdate()
-        {
-            _curState.OnUpdate();
-        }
-
-        public void AddState(EPlayerState tag, State state)
-        {
-            Debug.Assert(state != null, "매개변수에 존재하지 않는 State 할당");
-
-            state.Init(this);
-            _dicState[tag] = state;
-        }
-
-        public void ChangeState(EPlayerState tag)
-        {
-            if (_curState != null)
-            {
-                _curState.OnExit();
-            }
-
-            _curState = _dicState[tag];
-            _curState.OnEnter();
-        }
-    }
-
-    abstract class State
-    {
-        protected FSM fsm;
-        public void Init(FSM fsm)
-        {
-            this.fsm = fsm;
-        }
-
-        public abstract void OnEnter();
-        public abstract void OnUpdate();
-        public abstract void OnExit();
-    }
-
-    class IdleState : State
-    {
-        public override void OnEnter()
-        {
-
-        }
-
-        public override void OnUpdate()
-        {
-
-        }
-
-        public override void OnExit()
-        {
-
-        }
-    }
-
-    class BurnState : State
-    {
-        public override void OnEnter()
-        {
-
-        }
-
-        public override void OnUpdate()
-        {
-
-        }
-
-        public override void OnExit()
-        {
-
-        }
-    }
-
-    class PoisonedState : State
-    {
-        public override void OnEnter()
-        {
-
-        }
-
-        public override void OnUpdate()
-        {
-
-        }
-
-        public override void OnExit()
-        {
-
-        }
-    }
-
-    class CursedState : State
-    {
-        public override void OnEnter()
-        {
-
-        }
-
-        public override void OnUpdate()
-        {
-
-        }
-
-        public override void OnExit()
-        {
-
-        }
-    }
-    #endregion
-    //[SerializeField] private PlayerState _playerState;
-
+    static public event Action<Vector3> IsVacancy;
+    private event Action OnDie;
     public int Health
     {
         get
@@ -147,32 +25,179 @@ public class Enemy : MonoBehaviour
         private set
         {
             _health = value;
+            Debug.Log($"{gameObject.name}:{_health}");
+            if(_health <= 0)
+            {
+                OnDie.Invoke();
+            }
         }
     }
     private int _health;
 
-    private Material _material;
-    private FSM _fsm;
+    [SerializeField] private int _initHealth;
+
+    private PlayerAttack _player;
+    private Collider _collider;
+    private Renderer _renderer;
+    private bool[] _stateTable;
     private void Awake()
     {
-        _material = GetComponent<Material>();
+        _player = Camera.main.GetComponent<PlayerAttack>();
+        _collider = GetComponent<Collider>();
+        _renderer = GetComponent<Renderer>();
 
-        _fsm = new FSM();
-        _fsm.Init();
+        _stateTable = new bool[(int)EEnemyState.MAX];
+        for(int i = 0; i < _stateTable.Length; ++i)
+        {
+            _stateTable[i] = false;
+        }
 
-        _fsm.AddState(EPlayerState.IDLE, new IdleState());
-
-        _fsm.AddState(EPlayerState.BURN, new BurnState());
-
-        _fsm.AddState(EPlayerState.POISONED, new PoisonedState());
-
-        _fsm.AddState(EPlayerState.CURSED, new CursedState());
-
-        _fsm.ChangeState(EPlayerState.IDLE);
+        Health = _initHealth;
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        _fsm.OnUpdate();
+        OnDie -= IsDead;
+        OnDie += IsDead;
+    }
+
+    public void GetAttack(EPlayerState state)
+    {
+        switch(state)
+        {
+            case EPlayerState.BURNING:
+                BurningAttacked();
+                break;
+            case EPlayerState.POISON:
+                PoisonAttacked();
+                break;
+            case EPlayerState.CURSE:
+                CurseAttacked();
+                break;
+            case EPlayerState.FIST:
+                FistAttacked();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void IsDead()
+    {
+        StopAllCoroutines();
+        transform.localScale = Vector3.one;
+        _collider.enabled = true;
+        Health = _initHealth;
+
+        gameObject.SetActive(false);
+    }
+
+    #region Damaged
+    private bool _burnActive = false;
+    private int _burnStack = 0;
+    private int _burnMaxStack = 10;
+    private void BurningAttacked()
+    {
+        if (_burnStack < _burnMaxStack)
+        {
+            ++_burnStack;
+        }
+
+        if (!_burnActive)
+        {
+            StartCoroutine(BurnCoroutine());
+        }
+    }
+    
+    public IEnumerator BurnCoroutine()
+    {
+        _burnActive = true;
+        int count = 4;
+        yield return new WaitForSeconds(0.1f);
+        while (count != 0)
+        {
+            yield return new WaitForSeconds(4.9f);
+
+            --count;
+            _renderer.material.color = Color.red;
+            StartCoroutine(ReturnColor());
+            Health -= 5 * _burnStack;
+        }
+        _burnStack = 0;
+
+        yield return null;
+    }
+
+    private void PoisonAttacked()
+    {
+        StartCoroutine(PoisonedCoroutine());
+    }
+
+    public IEnumerator PoisonedCoroutine()
+    {
+        int count = 2;
+        yield return new WaitForSeconds(0.1f);
+        while (count != 0)
+        {
+            yield return new WaitForSeconds(2.9f);
+            
+            --count;
+            _renderer.material.color = Color.magenta;
+            StartCoroutine(ReturnColor());
+            Health -= 2;
+        }
+    }
+
+    private void CurseAttacked()
+    {
+        StopCoroutine(CursedCoroutine());
+        StartCoroutine(CursedCoroutine());
+    }
+
+    public IEnumerator CursedCoroutine()
+    {
+        while(true)
+        {
+            if (Health != 0 && Health < _initHealth / 10)
+            {
+                StopAllCoroutines();
+                StartCoroutine(ReturnColor());
+                StartCoroutine(IsDeadByCurse());
+            }
+
+            yield return null;
+        }
+    }
+
+    public IEnumerator IsDeadByCurse()
+    {
+        float scale = 0f;
+        _collider.enabled = false;
+        while (scale <= 0.5f)
+        {
+            yield return new WaitForSeconds(0.01f);
+            transform.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, scale);
+            scale += 0.01f;
+        }
+        Health = 0;
+    }
+
+    public IEnumerator ReturnColor()
+    {
+        yield return new WaitForSeconds(0.1f);
+        _renderer.material.color = Color.white;
+    }
+    
+    private void FistAttacked()
+    {
+        Health -= _player.Damage;
+    }
+#endregion
+
+    private void OnDisable()
+    {
+        _player.OnAttack -= GetAttack;
+        OnDie -= IsDead;
+        IsVacancy?.Invoke(transform.position);
     }
 }
