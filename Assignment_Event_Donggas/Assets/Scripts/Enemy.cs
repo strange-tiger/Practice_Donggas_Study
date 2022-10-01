@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Enemy : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class Enemy : MonoBehaviour
     }
 
     static public event Action<Vector3> IsVacancy;
+    public UnityEvent<EPlayerState> OnTakeAttack;
+
     private event Action OnDie;
     public int Health
     {
@@ -35,22 +38,16 @@ public class Enemy : MonoBehaviour
     private int _health;
 
     [SerializeField] private int _initHealth;
+    [SerializeField] private int _initScale;
 
     private PlayerAttack _player;
     private Collider _collider;
     private Renderer _renderer;
-    private bool[] _stateTable;
     private void Awake()
     {
         _player = Camera.main.GetComponent<PlayerAttack>();
         _collider = GetComponent<Collider>();
         _renderer = GetComponent<Renderer>();
-
-        _stateTable = new bool[(int)EEnemyState.MAX];
-        for(int i = 0; i < _stateTable.Length; ++i)
-        {
-            _stateTable[i] = false;
-        }
 
         Health = _initHealth;
     }
@@ -59,6 +56,8 @@ public class Enemy : MonoBehaviour
     {
         OnDie -= IsDead;
         OnDie += IsDead;
+        OnTakeAttack.RemoveListener(GetAttack);
+        OnTakeAttack.AddListener(GetAttack);
     }
 
     public void GetAttack(EPlayerState state)
@@ -85,7 +84,7 @@ public class Enemy : MonoBehaviour
     private void IsDead()
     {
         StopAllCoroutines();
-        transform.localScale = Vector3.one;
+        transform.localScale = _initScale * Vector3.one;
         _collider.enabled = true;
         Health = _initHealth;
 
@@ -197,7 +196,7 @@ public class Enemy : MonoBehaviour
 
     private void OnDisable()
     {
-        _player.OnAttack -= GetAttack;
+        OnTakeAttack.RemoveListener(GetAttack);
         OnDie -= IsDead;
         IsVacancy?.Invoke(transform.position);
     }

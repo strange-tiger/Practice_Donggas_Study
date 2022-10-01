@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    public event Action<EPlayerState> OnAttack;
     public int Damage = 10;
 
     private PlayerState _state;
@@ -27,12 +26,8 @@ public class PlayerAttack : MonoBehaviour
                 Debug.Log("Did Hit");
 
                 Enemy enemy = hit.collider.gameObject.GetComponent<Enemy>();
-                
-                OnAttack -= enemy.GetAttack;
-                OnAttack += enemy.GetAttack;
-                
-                OnAttack?.Invoke(_state.CurState);
-                OnAttack -= enemy.GetAttack;
+
+                enemy.OnTakeAttack.Invoke(_state.CurState);
             }
         }
     }
