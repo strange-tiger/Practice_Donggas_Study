@@ -2,17 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Defines.Enum;
 
 #region FSM
-public enum EPlayerState
-{
-    BURNING,
-    POISON,
-    CURSE,
-    FIST,
-    MAX,
-}
-
 class FSM
 {
     public Action<EPlayerState> OnStateChanged;

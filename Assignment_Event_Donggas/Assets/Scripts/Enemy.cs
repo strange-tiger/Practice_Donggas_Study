@@ -3,17 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Defines.Enum;
 
 public class Enemy : MonoBehaviour
 {
-    public enum EEnemyState
-    {
-        BURN,
-        POISONED,
-        CURSED,
-        MAX,
-    }
-
     static public event Action<Vector3> IsVacancy;
     public UnityEvent<EPlayerState> OnTakeAttack;
 
@@ -112,10 +105,9 @@ public class Enemy : MonoBehaviour
     {
         _burnActive = true;
         int count = 4;
-        yield return new WaitForSeconds(0.1f);
         while (count != 0)
         {
-            yield return new WaitForSeconds(4.9f);
+            yield return new WaitForSeconds(5f);
 
             --count;
             _renderer.material.color = Color.red;
@@ -136,10 +128,9 @@ public class Enemy : MonoBehaviour
     public IEnumerator PoisonedCoroutine()
     {
         int count = 2;
-        yield return new WaitForSeconds(0.1f);
         while (count != 0)
         {
-            yield return new WaitForSeconds(2.9f);
+            yield return new WaitForSeconds(3f);
             
             --count;
             _renderer.material.color = Color.magenta;
