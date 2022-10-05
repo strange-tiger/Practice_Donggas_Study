@@ -1,2 +1,2 @@
-# Practice_Event_MiniGame
- 이벤트와 FSM 연습을 위한 미니 게임 제작
+# Practice_Donggas_MiniGame
+ 돈까스 스터디 과제 & 연습을 위한 레포지토리
