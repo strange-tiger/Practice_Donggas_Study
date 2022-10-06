@@ -32,20 +32,18 @@ public class Dummy : MonoBehaviour
         }
     }
 
-    //private static readonly var DELAY_CHANGE_COLOR = new WaitForSeconds(delayChangeColor);
-    //private static readonly var DELAY_SHOW_DAMAGE = new WaitForSeconds(0.1f);
-
-    private float _delayChangeColor = 0.1f;
+    static private float _delayChangeColor = 0.1f;
+    private static readonly YieldInstruction DELAY_CHANGE_COLOR = new WaitForSeconds(_delayChangeColor);
     private IEnumerator OnChangeColor()
     {
         _renderer.material.color = Color.red;
-        yield return new WaitForSeconds(_delayChangeColor);
-        //yield return DELAY_CHANGE_COLOR;
+        yield return DELAY_CHANGE_COLOR;
         _renderer.material.color = Color.white;
     }
 
-    private float _delayShowDamage = 1f;
-    private float _delayOnFadeOutText = 0.1f;
+    static private float _delayShowDamage = 1f;
+    static private float _delayOnFadeOutText = 0.1f;
+    private static readonly YieldInstruction DELAY_SHOW_DAMAGE = new WaitForSeconds(_delayOnFadeOutText);
     private IEnumerator OnShowDamage(float damage)
     {
         int index = _damagedTextIndex;
@@ -58,8 +56,7 @@ public class Dummy : MonoBehaviour
         float time = _delayShowDamage;
         while (time >= 0f)
         {
-            yield return new WaitForSeconds(_delayOnFadeOutText);
-            //yield return DELAY_SHOW_DAMAGE;
+            yield return DELAY_SHOW_DAMAGE;
             time -= _delayOnFadeOutText;
             
             _damagedTexts[index].color = new Color(255f, 0f, 0f, _damagedTexts[index].color.a - _delayOnFadeOutText);
