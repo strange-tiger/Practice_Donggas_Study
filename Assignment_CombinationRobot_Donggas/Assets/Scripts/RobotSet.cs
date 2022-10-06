@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class RobotSet : MonoBehaviour
 {
-    [SerializeField]
     public float MoveSpeed;
-    public float Attack;
+    public float Attack { get; private set; }
     // public int WeaponIndex;
 
     private void Awake()

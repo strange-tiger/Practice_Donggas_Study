@@ -1,16 +1,31 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
-    public float MoveAxisHorizontal;
-    public float MoveAxisVertical;
-    public float RotationAxisX;
-    public float RotationAxisY;
-    public bool AttackMouseOne;
-    public bool AttackMouseTwo;
-    public int RobotIndex;
+    static public event Action<int> OnRobotIndexChanged;
+
+    public float MoveAxisHorizontal { get; private set; }
+    public float MoveAxisVertical { get; private set; }
+    public float RotationAxisX { get; private set; }
+    public float RotationAxisY { get; private set; }
+    public bool AttackMouseOne { get; private set; }
+    public bool AttackMouseTwo { get; private set; }
+    public int RobotIndex
+    {
+        get
+        {
+            return _robotIndex;
+        }
+        private set
+        {
+            _robotIndex = value;
+            OnRobotIndexChanged.Invoke(_robotIndex);
+        }
+    }
+    private int _robotIndex = 0;
     private void Awake()
     {
         MoveAxisHorizontal = transform.position.x;
@@ -21,6 +36,8 @@ public class PlayerInput : MonoBehaviour
         
         AttackMouseOne = false;
         AttackMouseTwo = false;
+
+        RobotIndex = 0;
     }
 
     private void Update()
