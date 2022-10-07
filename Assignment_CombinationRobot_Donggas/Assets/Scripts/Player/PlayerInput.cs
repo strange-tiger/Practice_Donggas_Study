@@ -37,7 +37,10 @@ public class PlayerInput : MonoBehaviour
         AttackMouseOne = false;
         AttackMouseTwo = false;
 
-        RobotIndex = 0;
+        _robotIndex = 0;
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()

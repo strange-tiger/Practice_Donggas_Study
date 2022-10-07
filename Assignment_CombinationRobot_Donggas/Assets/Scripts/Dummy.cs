@@ -27,9 +27,14 @@ public class Dummy : MonoBehaviour
         if (other.gameObject.layer == _attackLayer)
         {
             RobotSet temp = other.GetComponent<RobotSet>();
-            StartCoroutine(OnChangeColor());
-            StartCoroutine(OnShowDamage(temp.Attack));
+            TakeDamage(temp.Attack);
         }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        StartCoroutine(OnChangeColor());
+        StartCoroutine(OnShowDamage(damage));
     }
 
     static private float _delayChangeColor = 0.1f;
@@ -46,22 +51,22 @@ public class Dummy : MonoBehaviour
     private static readonly YieldInstruction DELAY_SHOW_DAMAGE = new WaitForSeconds(_delayOnFadeOutText);
     private IEnumerator OnShowDamage(float damage)
     {
-        int index = _damagedTextIndex;
+        TextMeshProUGUI damageText = _damagedTexts[_damagedTextIndex];
         ++_damagedTextIndex;
 
         Debug.Log(damage);
-        _damagedTexts[index].text = $"{damage}";
-        _damagedTexts[index].gameObject.SetActive(true);
+        damageText.text = $"{damage}";
+        damageText.gameObject.SetActive(true);
 
         float time = _delayShowDamage;
         while (time >= 0f)
         {
             yield return DELAY_SHOW_DAMAGE;
             time -= _delayOnFadeOutText;
-            
-            _damagedTexts[index].color = new Color(255f, 0f, 0f, _damagedTexts[index].color.a - _delayOnFadeOutText);
-        }
 
-        _damagedTexts[index].gameObject.SetActive(false);
+            damageText.color = new Color(255f, 0f, 0f, damageText.color.a - _delayOnFadeOutText);
+        }
+        damageText.color = new Color(255f, 0f, 0f, 1f);
+        damageText.gameObject.SetActive(false);
     }
 }

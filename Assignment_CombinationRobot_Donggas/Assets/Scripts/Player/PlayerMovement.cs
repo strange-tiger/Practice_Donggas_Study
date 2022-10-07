@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        _transform.Translate(_moveSpeed * new Vector3(_input.MoveAxisHorizontal, 0f, _input.MoveAxisVertical), Space.Self);
-        _transform.Rotate(new Vector3(0f, _rotationSpeed * _input.RotationAxisX, 0f), Space.Self);
+        _transform.Translate(_moveSpeed * Time.deltaTime * new Vector3(_input.MoveAxisHorizontal, 0f, _input.MoveAxisVertical), Space.Self);
+        _transform.Rotate(new Vector3(0f, _rotationSpeed * Time.deltaTime * _input.RotationAxisX, 0f), Space.Self);
     }
 }

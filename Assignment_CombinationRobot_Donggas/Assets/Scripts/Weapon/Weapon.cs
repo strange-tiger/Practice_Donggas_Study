@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Weapon : MonoBehaviour
 {
-    protected bool _onCooltime;
+    protected bool _onCooltime = false;
 
     protected abstract void OnTriggerEnter(Collider other);
 

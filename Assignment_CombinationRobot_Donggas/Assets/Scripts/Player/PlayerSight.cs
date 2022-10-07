@@ -22,12 +22,6 @@ public class PlayerSight : MonoBehaviour
 
     private void Update()
     {
-        float rotation = (_camera.transform.rotation * Quaternion.Euler(-_rotationSpeed * _input.RotationAxisY, 0f, 0f)).x * 180f;
-        
-        if (rotation > _MinRotation && rotation < _MaxRotation)
-        {
-            _camera.transform.rotation *= Quaternion.Euler(-_rotationSpeed * _input.RotationAxisY, 0f, 0f);
-        }
-        
+        _camera.transform.Rotate(-_rotationSpeed * Time.deltaTime * _input.RotationAxisY, 0f, 0f);
     }
 }
