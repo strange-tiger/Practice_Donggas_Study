@@ -31,7 +31,5 @@ public class WeaponSet : MonoBehaviour
             }
             _weapons[i, _weaponIndexList[i]].SetActive(true);
         }
-
-        Component a = new Component();
     }
 }
