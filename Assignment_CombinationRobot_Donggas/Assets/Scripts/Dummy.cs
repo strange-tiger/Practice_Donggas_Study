@@ -8,7 +8,7 @@ public class Dummy : MonoBehaviour
     private Renderer _renderer;
     private TextMeshProUGUI[] _damagedTexts = new TextMeshProUGUI[15];
     private int _damagedTextIndex = 0;
-    private LayerMask _attackLayer = 1 << 6;
+    private int _attackLayer = 6;
     private void Awake()
     {
         _renderer = GetComponent<Renderer>();
@@ -33,28 +33,33 @@ public class Dummy : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        StartCoroutine(OnChangeColor());
-        StartCoroutine(OnShowDamage(damage));
+        StartCoroutine(ChangeColor());
+        StartCoroutine(ShowDamage(damage));
     }
 
-    static private float _delayChangeColor = 0.1f;
+    private static float _delayChangeColor = 0.1f;
     private static readonly YieldInstruction DELAY_CHANGE_COLOR = new WaitForSeconds(_delayChangeColor);
-    private IEnumerator OnChangeColor()
+    private IEnumerator ChangeColor()
     {
         _renderer.material.color = Color.red;
         yield return DELAY_CHANGE_COLOR;
         _renderer.material.color = Color.white;
     }
 
-    static private float _delayShowDamage = 1f;
-    static private float _delayOnFadeOutText = 0.1f;
+    private static float _delayShowDamage = 1f;
+    private static float _delayOnFadeOutText = 0.1f;
     private static readonly YieldInstruction DELAY_SHOW_DAMAGE = new WaitForSeconds(_delayOnFadeOutText);
-    private IEnumerator OnShowDamage(float damage)
+    private IEnumerator ShowDamage(float damage)
     {
         TextMeshProUGUI damageText = _damagedTexts[_damagedTextIndex];
-        ++_damagedTextIndex;
 
-        Debug.Log(damage);
+        ++_damagedTextIndex;
+        if (_damagedTextIndex > _damagedTexts.Length)
+        {
+            _damagedTextIndex = 0;
+        }
+
+        Debug.Log($"{Time.time} : {damage}");
         damageText.text = $"{damage}";
         damageText.gameObject.SetActive(true);
 
