@@ -23,19 +23,11 @@ public class Fist : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (_onCooltime)
+        if (_onCooltime || !_input.AttackMouseOne)
         {
             return;
         }
-        if (!_input.AttackMouseOne)
-        {
-            return;
-        }
-        if (other.gameObject.layer != _enemyLayer)
-        {
-            return;
-        }
-        if (_onWhirlwind)
+        if (other.gameObject.layer != _enemyLayer || _onWhirlwind)
         {
             return;
         }
@@ -46,7 +38,7 @@ public class Fist : MonoBehaviour
     }
 
     private static readonly YieldInstruction COOLTIME = new WaitForSeconds(_cooltime);
-    IEnumerator OnCooltime()
+    private IEnumerator OnCooltime()
     {
         _onCooltime = true;
         yield return COOLTIME;

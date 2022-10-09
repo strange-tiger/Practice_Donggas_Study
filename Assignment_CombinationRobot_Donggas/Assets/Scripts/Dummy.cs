@@ -37,7 +37,7 @@ public class Dummy : MonoBehaviour
         StartCoroutine(ShowDamage(damage));
     }
 
-    private static float _delayChangeColor = 0.1f;
+    private const float _delayChangeColor = 0.1f;
     private static readonly YieldInstruction DELAY_CHANGE_COLOR = new WaitForSeconds(_delayChangeColor);
     private IEnumerator ChangeColor()
     {
@@ -46,8 +46,8 @@ public class Dummy : MonoBehaviour
         _renderer.material.color = Color.white;
     }
 
-    private static float _delayShowDamage = 1f;
-    private static float _delayOnFadeOutText = 0.1f;
+    private const float _delayShowDamage = 1f;
+    private const float _delayOnFadeOutText = 0.1f;
     private static readonly YieldInstruction DELAY_SHOW_DAMAGE = new WaitForSeconds(_delayOnFadeOutText);
     private IEnumerator ShowDamage(float damage)
     {

@@ -6,7 +6,6 @@ public class RobotSet : MonoBehaviour
 {
     public float MoveSpeed;
     public float Attack { get; private set; }
-    // public int WeaponIndex;
 
     private void Awake()
     {
