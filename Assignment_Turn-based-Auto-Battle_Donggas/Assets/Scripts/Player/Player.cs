@@ -49,6 +49,7 @@ public class Player : MonoBehaviour
     private float _actionGauge;
 
     private Vector3 _textInitPosition;
+    private bool _onDamaged = false;
     private void OnEnable()
     {
         _hpSlider.maxValue = MAX_HP;
@@ -61,24 +62,23 @@ public class Player : MonoBehaviour
         _actionSlider.value = ActionGauge;
 
         _speed = UnityEngine.Random.Range(MIN_SPEED, MAX_SPEED);
+        _speed = Mathf.Round(_speed);
 
-        _textInitPosition = _damagedText.rectTransform.localPosition;
+        _textInitPosition = _damagedText.transform.localPosition;
         _damagedText.gameObject.SetActive(false);
     }
 
     private static readonly WaitForEndOfFrame COROUTINE_FRAME = new WaitForEndOfFrame();
     private const float ON_DAMAGED_DELAY = 2f;
+    private const float TEXT_MOVE_POSITION = 200f;
     private IEnumerator onDamaged(float damage)
     {
         float elapsedTime = 0f;
         float percentage = 0f;
 
-        _damagedText.rectTransform.localPosition = _textInitPosition;
+        _onDamaged = true;
 
-        _damagedText.color = Color.white;
-        _damagedText.text = Mathf.RoundToInt(damage).ToString();
-
-        _damagedText.gameObject.SetActive(true);
+        ShowDamage(damage);
 
         while (elapsedTime <= ON_DAMAGED_DELAY)
         {
@@ -86,7 +86,8 @@ public class Player : MonoBehaviour
             elapsedTime += Time.deltaTime;
             percentage = elapsedTime / ON_DAMAGED_DELAY;
 
-            _damagedText.rectTransform.localPosition = Vector3.Lerp(_textInitPosition, _textInitPosition + Vector3.up, percentage);
+            _damagedText.transform.localPosition =
+                Vector3.Lerp(_textInitPosition, _textInitPosition + TEXT_MOVE_POSITION * Vector3.up, percentage);
 
             _damagedText.color = (1f - percentage) * Color.white;
 
@@ -100,36 +101,47 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void ShowDamage(float damage)
+    {
+        _damagedText.rectTransform.localPosition = _textInitPosition;
+
+        _damagedText.color = Color.white;
+        _damagedText.text = Mathf.RoundToInt(damage).ToString();
+
+        _damagedText.gameObject.SetActive(true);
+    }
+
     private const float ON_ACTION_DELAY = 1f;
     private IEnumerator onAction()
     {
         float elapsedTime = 0f;
 
+        _onDamaged = false;
+
         while (elapsedTime <= ON_ACTION_DELAY)
         {
+            while (_onDamaged) { yield return COROUTINE_FRAME; }
+
             yield return COROUTINE_FRAME;
             elapsedTime += Time.deltaTime;
 
             _actionSlider.value += Speed * Time.deltaTime;
-
-            if (_actionSlider.value >= MAX_ACTION)
-            {
-                StartCoroutine(onAttack());
-                break;
-            }
         }
     }
 
     private static readonly WaitForSeconds DELAY_FOR_ATTACK = new WaitForSeconds(0.5f);
     private const float ON_MOVE_DELAY = 0.5f;
-    private const float ON_MOVE_DESTINATION = 4f;
+    private const float ON_MOVE_DESTINATION = 5f;
     private Vector3 _playerInitPosition;
-    private IEnumerator onAttack()
+    public IEnumerator onAttack()
     {
         float elapsedTime = 0f;
         float percentage = 0f;
 
         _playerInitPosition = transform.localPosition;
+
+        _actionGauge = 0f;
+        _actionSlider.value = 0f;
 
         while (elapsedTime <= ON_MOVE_DELAY)
         {
@@ -137,7 +149,8 @@ public class Player : MonoBehaviour
             elapsedTime += Time.deltaTime;
             percentage = elapsedTime / ON_MOVE_DELAY;
 
-            transform.localPosition = Vector3.Lerp(_playerInitPosition, _playerInitPosition + ON_MOVE_DESTINATION * transform.forward, percentage);
+            transform.localPosition =
+                Vector3.Lerp(_playerInitPosition, _playerInitPosition + ON_MOVE_DESTINATION * transform.forward, percentage);
         }
 
         yield return DELAY_FOR_ATTACK;
@@ -148,12 +161,12 @@ public class Player : MonoBehaviour
             elapsedTime -= Time.deltaTime;
             percentage = elapsedTime / ON_MOVE_DELAY;
 
-            transform.localPosition = Vector3.Lerp(_playerInitPosition, _playerInitPosition + ON_MOVE_DESTINATION * transform.forward, percentage);
+            transform.localPosition =
+                Vector3.Lerp(_playerInitPosition, _playerInitPosition + ON_MOVE_DESTINATION * transform.forward, percentage);
         }
 
-        AttackEnd.Invoke();
+        transform.localPosition = _playerInitPosition;
 
-        _actionGauge = 0f;
-        _actionSlider.value = 0f;
+        AttackEnd.Invoke();
     }
 }
