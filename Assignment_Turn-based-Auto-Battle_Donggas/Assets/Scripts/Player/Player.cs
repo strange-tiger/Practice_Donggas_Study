@@ -7,19 +7,21 @@ using TMPro;
 
 public class Player : MonoBehaviour
 {
-    private const float MIN_SPEED = 5f;
+    public const float DAMAGE = 10f;
+    public const float MAX_HP = 100f;
+    public const float MAX_ACTION = 100f;
+
+    private const float MIN_SPEED = 10f;
     private const float MAX_SPEED = 40f;
-    private const float DAMAGE = 10f;
 
     [SerializeField] Slider _hpSlider;
     [SerializeField] Slider _actionSlider;
     [SerializeField] TextMeshProUGUI _damagedText;
     [SerializeField] float _speed;
     [SerializeField] float _damage;
-    [SerializeField] float _maxHp;
-    [SerializeField] float _maxAction;
 
     public event Action OnDead;
+    public event Action AttackEnd;
 
     public float Speed { get => _speed; }
     public float Damage { get => _damage; }
@@ -49,10 +51,10 @@ public class Player : MonoBehaviour
     private Vector3 _textInitPosition;
     private void OnEnable()
     {
-        _hpSlider.maxValue = _maxHp;
-        _actionSlider.maxValue = _maxAction;
+        _hpSlider.maxValue = MAX_HP;
+        _actionSlider.maxValue = MAX_ACTION;
 
-        _hpGauge = _maxHp;
+        _hpGauge = MAX_HP;
         _actionGauge = 0f;
 
         _hpSlider.value = HpGauge;
@@ -78,16 +80,16 @@ public class Player : MonoBehaviour
 
         _damagedText.gameObject.SetActive(true);
 
-        while(elapsedTime <= ON_DAMAGED_DELAY)
+        while (elapsedTime <= ON_DAMAGED_DELAY)
         {
             yield return COROUTINE_FRAME;
             elapsedTime += Time.deltaTime;
             percentage = elapsedTime / ON_DAMAGED_DELAY;
 
             _damagedText.rectTransform.localPosition = Vector3.Lerp(_textInitPosition, _textInitPosition + Vector3.up, percentage);
-            
+
             _damagedText.color = (1f - percentage) * Color.white;
-            
+
             _hpSlider.value -= damage * Time.deltaTime / ON_DAMAGED_DELAY;
 
             if (_hpSlider.value <= 0f)
@@ -110,9 +112,9 @@ public class Player : MonoBehaviour
 
             _actionSlider.value += Speed * Time.deltaTime;
 
-            if (_actionSlider.value >= 100f)
+            if (_actionSlider.value >= MAX_ACTION)
             {
-                _actionSlider.value = 0f;
+                StartCoroutine(onAttack());
                 break;
             }
         }
@@ -120,9 +122,9 @@ public class Player : MonoBehaviour
 
     private static readonly WaitForSeconds DELAY_FOR_ATTACK = new WaitForSeconds(0.5f);
     private const float ON_MOVE_DELAY = 0.5f;
-    private static readonly Vector3 ON_MOVE_DESTINATION = 7.5f * Vector3.forward;
+    private const float ON_MOVE_DESTINATION = 4f;
     private Vector3 _playerInitPosition;
-    private IEnumerator onMove()
+    private IEnumerator onAttack()
     {
         float elapsedTime = 0f;
         float percentage = 0f;
@@ -135,7 +137,7 @@ public class Player : MonoBehaviour
             elapsedTime += Time.deltaTime;
             percentage = elapsedTime / ON_MOVE_DELAY;
 
-            transform.localPosition = Vector3.Lerp(_playerInitPosition, _playerInitPosition + ON_MOVE_DESTINATION, percentage);
+            transform.localPosition = Vector3.Lerp(_playerInitPosition, _playerInitPosition + ON_MOVE_DESTINATION * transform.forward, percentage);
         }
 
         yield return DELAY_FOR_ATTACK;
@@ -146,8 +148,12 @@ public class Player : MonoBehaviour
             elapsedTime -= Time.deltaTime;
             percentage = elapsedTime / ON_MOVE_DELAY;
 
-            transform.localPosition = Vector3.Lerp(_playerInitPosition, _playerInitPosition + ON_MOVE_DESTINATION, percentage);
+            transform.localPosition = Vector3.Lerp(_playerInitPosition, _playerInitPosition + ON_MOVE_DESTINATION * transform.forward, percentage);
         }
 
+        AttackEnd.Invoke();
+
+        _actionGauge = 0f;
+        _actionSlider.value = 0f;
     }
 }
