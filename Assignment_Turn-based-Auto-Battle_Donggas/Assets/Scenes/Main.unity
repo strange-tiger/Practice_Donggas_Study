@@ -234,7 +234,8 @@ MonoBehaviour:
   _actionSlider: {fileID: 324767329}
   _damagedText: {fileID: 1020300758}
   _speed: 0
-  _damage: 0
+  _damage: 25
+  _defense: 5
 --- !u!23 &221353312
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -950,7 +951,8 @@ MonoBehaviour:
   _actionSlider: {fileID: 2025357160}
   _damagedText: {fileID: 1613166001}
   _speed: 0
-  _damage: 0
+  _damage: 30
+  _defense: 6
 --- !u!1 &542253114
 GameObject:
   m_ObjectHideFlags: 0

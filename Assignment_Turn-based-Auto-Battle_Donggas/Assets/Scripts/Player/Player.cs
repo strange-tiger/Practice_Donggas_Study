@@ -19,12 +19,14 @@ public class Player : MonoBehaviour
     [SerializeField] TextMeshProUGUI _damagedText;
     [SerializeField] float _speed;
     [SerializeField] float _damage;
+    [SerializeField] float _defense;
 
     public event Action OnDead;
     public event Action AttackEnd;
 
     public float Speed { get => _speed; }
     public float Damage { get => _damage; }
+    public float Defense { get => _defense; }
 
     public float HpGauge
     {
@@ -140,9 +142,6 @@ public class Player : MonoBehaviour
 
         _playerInitPosition = transform.localPosition;
 
-        _actionGauge = 0f;
-        _actionSlider.value = 0f;
-
         while (elapsedTime <= ON_MOVE_DELAY)
         {
             yield return COROUTINE_FRAME;
@@ -166,6 +165,9 @@ public class Player : MonoBehaviour
         }
 
         transform.localPosition = _playerInitPosition;
+
+        _actionGauge = 0f;
+        _actionSlider.value = 0f;
 
         AttackEnd.Invoke();
     }
