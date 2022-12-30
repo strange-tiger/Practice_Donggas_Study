@@ -15,8 +15,8 @@ public class GameManager : MonoBehaviour
             player.OnDead -= StopGame;
             player.OnDead += StopGame;
 
-            player.AttackEnd -= ContinueGame;
-            player.AttackEnd += ContinueGame;
+            player.ActionEnd -= ContinueGame;
+            player.ActionEnd += ContinueGame;
         }
 
         _currentPassTime = StartCoroutine(passTime());
@@ -27,16 +27,24 @@ public class GameManager : MonoBehaviour
         foreach (Player player in _players)
         {
             player.OnDead -= StopGame;
-            player.AttackEnd -= ContinueGame;
+            player.ActionEnd -= ContinueGame;
         }
     }
 
+    /// <summary>
+    /// 플레이어 중 하나가 죽으면 호출된다.
+    /// 작동하고 있는 코루틴을 모두 끈다.
+    /// </summary>
     private void StopGame()
     {
         _gameOver = true;
         StopAllCoroutines();
     }
 
+    /// <summary>
+    /// 한 플레이어의 행동이 끝나면 호출된다.
+    /// passTime 코루틴을 다시 호출한다.
+    /// </summary>
     private void ContinueGame()
     {
         if (_gameOver) { return; }
@@ -44,6 +52,11 @@ public class GameManager : MonoBehaviour
     }
 
     private static readonly WaitForSeconds DELAY_TIME = new WaitForSeconds(1f);
+    /// <summary>
+    /// 시간을 재어 액션 게이지가 차도록 한다.
+    /// 액션 게이지는 1초마다 차오른다.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator passTime()
     {
         while (!_gameOver)
@@ -54,6 +67,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 각 플레이어의 액션 게이지가 차오르도록 한다.
+    /// 만약 플레이어의 액션 게이지가 가득 차지 않았다면 계속한다.
+    /// 만약 플레이어의 액션 게이지가 가득 찼다면 플레이어가 행동을 하도록 한다.
+    /// 행동의 우선 순위는 스킬 > 일반 공격 순으로, 스킬이나 공격 둘 중 하나를 수행하고
+    /// 액션 연출을 수행하고 종료한다.
+    /// </summary>
     private void FillActionGauge()
     {
         for (int i = 0; i < _players.Length; ++i)
@@ -83,6 +103,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 일반 공격이다.
+    /// 방어측 플레이어의 Damaged를 호출한다.
+    /// </summary>
+    /// <param name="attackPlayer"></param>
+    /// <param name="defensePlayer"></param>
     private void DefaultAttack(Player attackPlayer, Player defensePlayer)
     {
         defensePlayer.Damaged(attackPlayer.Damage);

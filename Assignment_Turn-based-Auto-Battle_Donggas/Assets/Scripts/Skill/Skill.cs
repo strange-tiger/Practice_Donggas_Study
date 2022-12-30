@@ -27,6 +27,12 @@ public abstract class Skill : MonoBehaviour
 
     public bool OnAvailable() => Cooltime == 0;
 
+    /// <summary>
+    /// 스킬을 사용한다.
+    /// 쿨타임을 Max로 되돌린다.
+    /// </summary>
+    /// <param name="usePlayer"></param>
+    /// <param name="defensePlayer"></param>
     public virtual void UseSkill(Player usePlayer, Player defensePlayer)
     {
         Cooltime = _maxCooltime;
