@@ -194,15 +194,29 @@ public class Player : MonoBehaviour
         _actionSlider.value = 0f;
     }
 
-    public void UseSkill(Player attackPlayer, Player defensePlayer)
+    public void Damaged(float damage)
+    {
+        if (damage < Defense)
+        {
+            damage = 0;
+        }
+        else
+        {
+            damage -= Defense;
+        }
+
+        HpGauge -= damage;
+    }
+
+    public void UseSkill(Player usePlayer, Player defensePlayer)
     {
         if (_secondSkill.OnAvailable())
         {
-            _secondSkill.UseSkill(attackPlayer, defensePlayer);
+            _secondSkill.UseSkill(usePlayer, defensePlayer);
         }
         else if (_firstSkill.OnAvailable())
         {
-            _firstSkill.UseSkill(attackPlayer, defensePlayer);
+            _firstSkill.UseSkill(usePlayer, defensePlayer);
         }
     }
 }

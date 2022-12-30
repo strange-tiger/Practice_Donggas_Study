@@ -27,7 +27,7 @@ public abstract class Skill : MonoBehaviour
 
     public bool OnAvailable() => Cooltime == 0;
 
-    public virtual void UseSkill(Player attackPlayer, Player defensePlayer)
+    public virtual void UseSkill(Player usePlayer, Player defensePlayer)
     {
         Cooltime = _maxCooltime;
         return;

@@ -320,6 +320,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxCooltime: 4
   _cooltimeCountText: {fileID: 1963129018}
+  _damageRate: 0.9
+  _count: 2
 --- !u!114 &221353316
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -334,6 +336,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxCooltime: 2
   _cooltimeCountText: {fileID: 1012651523}
+  _damageRate: 1.3
 --- !u!1 &260510085
 GameObject:
   m_ObjectHideFlags: 0
@@ -987,7 +990,7 @@ MonoBehaviour:
   _actionSlider: {fileID: 2025357160}
   _damagedText: {fileID: 1613166001}
   _speed: 0
-  _damage: 30
+  _damage: 15
   _defense: 6
   _firstSkill: {fileID: 528704030}
   _secondSkill: {fileID: 528704029}
@@ -1005,6 +1008,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxCooltime: 3
   _cooltimeCountText: {fileID: 570751969}
+  _fixedDamage: 50
+  _defenseDamageRate: 0.1
 --- !u!114 &528704030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1019,6 +1024,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxCooltime: 3
   _cooltimeCountText: {fileID: 1808102971}
+  _recoveryRate: 0.2
 --- !u!1 &542253114
 GameObject:
   m_ObjectHideFlags: 0
