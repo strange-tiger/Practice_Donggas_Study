@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
     [SerializeField] float _speed;
     [SerializeField] float _damage;
     [SerializeField] float _defense;
+    [SerializeField] Skill _firstSkill;
+    [SerializeField] Skill _secondSkill;
 
     public event Action OnDead;
     public event Action AttackEnd;
@@ -27,6 +29,10 @@ public class Player : MonoBehaviour
     public float Speed { get => _speed; }
     public float Damage { get => _damage; }
     public float Defense { get => _defense; }
+    public bool SkillAvailable
+    {
+        get => _firstSkill.OnAvailable() || _secondSkill.OnAvailable();
+    }
 
     public float HpGauge
     {
@@ -45,7 +51,7 @@ public class Player : MonoBehaviour
         set
         {
             _actionGauge = value;
-            StartCoroutine(onAction());
+            StartCoroutine(onIdle());
         }
     }
     private float _actionGauge;
@@ -114,7 +120,7 @@ public class Player : MonoBehaviour
     }
 
     private const float ON_ACTION_DELAY = 1f;
-    private IEnumerator onAction()
+    private IEnumerator onIdle()
     {
         float elapsedTime = 0f;
 
@@ -135,12 +141,14 @@ public class Player : MonoBehaviour
     private const float ON_MOVE_DELAY = 0.5f;
     private const float ON_MOVE_DESTINATION = 5f;
     private Vector3 _playerInitPosition;
-    public IEnumerator onAttack()
+    public IEnumerator onAction()
     {
         float elapsedTime = 0f;
         float percentage = 0f;
 
         _playerInitPosition = transform.localPosition;
+
+        CountSkillCooltime();
 
         while (elapsedTime <= ON_MOVE_DELAY)
         {
@@ -166,9 +174,35 @@ public class Player : MonoBehaviour
 
         transform.localPosition = _playerInitPosition;
 
-        _actionGauge = 0f;
-        _actionSlider.value = 0f;
+        ResetActionGauge();
 
         AttackEnd.Invoke();
+    }
+
+    private void CountSkillCooltime()
+    {
+        if (!SkillAvailable)
+        {
+            --_firstSkill.Cooltime;
+            --_secondSkill.Cooltime;
+        }
+    }
+
+    private void ResetActionGauge()
+    {
+        _actionGauge = 0f;
+        _actionSlider.value = 0f;
+    }
+
+    public void UseSkill(Player attackPlayer, Player defensePlayer)
+    {
+        if (_secondSkill.OnAvailable())
+        {
+            _secondSkill.UseSkill(attackPlayer, defensePlayer);
+        }
+        else if (_firstSkill.OnAvailable())
+        {
+            _firstSkill.UseSkill(attackPlayer, defensePlayer);
+        }
     }
 }
