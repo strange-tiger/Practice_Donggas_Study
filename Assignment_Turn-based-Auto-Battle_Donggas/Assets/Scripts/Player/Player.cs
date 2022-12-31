@@ -90,7 +90,7 @@ public class Player : MonoBehaviour
 
     private static readonly WaitForEndOfFrame COROUTINE_FRAME = new WaitForEndOfFrame();
     private const float ON_DAMAGED_DELAY = 2f;
-    private const float TEXT_MOVE_POSITION = 200f;
+    private const float TEXT_MOVE_POSITION = 2f;
     /// <summary>
     /// 대미지를 입을 때 연출을 보인다.
     /// 텍스트가 대미지를 표시하고 올라가며 사라진다.
@@ -116,7 +116,7 @@ public class Player : MonoBehaviour
             _damagedText.transform.localPosition =
                 Vector3.Lerp(_textInitPosition, _textInitPosition + TEXT_MOVE_POSITION * Vector3.up, percentage);
 
-            _damagedText.color = (1f - percentage) * Color.white;
+            _damagedText.color = (1f - percentage) * Color.black;
 
             _hpSlider.value -= damage * Time.deltaTime / ON_DAMAGED_DELAY;
 
@@ -137,7 +137,7 @@ public class Player : MonoBehaviour
     {
         _damagedText.rectTransform.localPosition = _textInitPosition;
 
-        _damagedText.color = Color.white;
+        _damagedText.color = Color.black;
         _damagedText.text = Mathf.RoundToInt(damage).ToString();
 
         _damagedText.gameObject.SetActive(true);
