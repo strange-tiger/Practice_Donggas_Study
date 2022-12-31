@@ -244,15 +244,8 @@ public class Player : MonoBehaviour
     /// <param name="damage"></param>
     public void Damaged(float damage)
     {
-        if (damage < Defense)
-        {
-            damage = 0;
-        }
-        else
-        {
-            damage -= Defense;
-        }
-
+        damage = Mathf.Max(damage - Defense, 0f);
+        
         HpGauge -= damage;
     }
 
