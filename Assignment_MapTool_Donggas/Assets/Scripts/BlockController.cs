@@ -6,7 +6,7 @@ using BlockType = Block.EBlockType;
 public class BlockController : MonoBehaviour
 {
     [SerializeField] LayerMask _layer;
-    
+
     private Camera _cam;
     private Vector3 _rayEndpointAdjustment;
     private BlockType _curBlockType;
@@ -40,8 +40,6 @@ public class BlockController : MonoBehaviour
             _curBlockType = BlockType.RIVER;
         else if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))
             _curBlockType = BlockType.WALL;
-
-        Debug.Log(_curBlockType);
     }
 
     private void ResetBlockType() => _curBlockType = BlockType.MAX;
@@ -50,9 +48,9 @@ public class BlockController : MonoBehaviour
     private void InputClick()
     {
         if (!Input.GetMouseButtonDown(0)) return;
-        Debug.Log("Here");
+
         if (_curBlockType == BlockType.MAX) return;
-        Debug.Log("Now");
+
         Vector3 mousePos = _cam.ScreenToWorldPoint(Input.mousePosition) - _rayEndpointAdjustment;
 
         Ray ray = new Ray(_cam.transform.position, mousePos);
