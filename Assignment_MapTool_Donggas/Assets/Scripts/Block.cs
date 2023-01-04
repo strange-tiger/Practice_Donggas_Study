@@ -15,7 +15,7 @@ public class Block : MonoBehaviour
         MAX
     }
 
-    [SerializeField] Material[] _materials;
+    [SerializeField] Material[] _mats;
 
     public EBlockType CurType
     {
@@ -36,7 +36,6 @@ public class Block : MonoBehaviour
     private void Init()
     {
         _renderer = GetComponent<MeshRenderer>();
-
         CurType = EBlockType.NONE;
     }
 
@@ -47,6 +46,6 @@ public class Block : MonoBehaviour
         int typeNum = (int)type;
         _curType = type;
 
-        _renderer.material = _materials[typeNum];
+        _renderer.material = _mats[typeNum];
     }
 }
