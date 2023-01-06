@@ -35,23 +35,29 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             SpawnPlayer();
         }
-        
-        if(Input.GetKeyDown(KeyCode.Escape))
+
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             ToggleUI();
         }
     }
 
+    /// <summary>
+    /// 플레이어를 지정된 위치로 옮기고 활성화한다.
+    /// </summary>
     private void SpawnPlayer()
     {
         _player.transform.position = INIT_PLAYER_POS;
         _player.SetActive(true);
     }
 
+    /// <summary>
+    /// UI의 활성화 여부를 제어한다.
+    /// </summary>
     private void ToggleUI()
     {
         _ui.SetActive(!_ui.activeSelf);

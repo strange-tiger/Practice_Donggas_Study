@@ -38,6 +38,9 @@ public class Player : MonoBehaviour
         MoveInput();
     }
 
+    /// <summary>
+    /// WASD 입력에 따라 이동한다.
+    /// </summary>
     private void MoveInput()
     {
         if (Input.GetKey(KeyCode.W))
@@ -50,16 +53,27 @@ public class Player : MonoBehaviour
             transform.Translate(_curSpeed * Vector3.right);
     }
 
+    /// <summary>
+    /// 현재 충돌하고 있는 블록의 내부에 중앙점이 들어가면 
+    /// 블록의 영향을 받는다.
+    /// 즉, InfluencedByBlock을 호출한다.
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer(BLOCK_LAYER) && CheckInField(other.transform.position))
         {
             _curBlockType = other.GetComponent<Block>().CurType;
-            Debug.Log(other.name);
+
             InfluencedByBlock(_curBlockType, other.transform.position);
         }
     }
 
+    /// <summary>
+    /// 블록의 내부에 플레이어의 중앙점이 들어갔는지 판별한다.
+    /// </summary>
+    /// <param name="blockPos"></param>
+    /// <returns></returns>
     private bool CheckInField(Vector3 blockPos)
     {
         float xDif = blockPos.x - transform.position.x;
@@ -74,6 +88,10 @@ public class Player : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// 매개변수로 받는 블록의 타입에 따라 
+    /// 플레이어가 받는 영향을 바꾼다.
+    /// </summary>
     private const float RIVER_DEVELERATION = 0.5f;
     private void InfluencedByBlock(BlockType blockType, Vector3 blockPos)
     {
@@ -98,12 +116,20 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 플레이어의 변화를 초기화한다.
+    /// </summary>
     private void ResetInfluence()
     {
         _renderer.material = _defaultMat;
         _curSpeed = _defaultSpeed;
     }
 
+    /// <summary>
+    /// 벽 블록에 들어갔을때, 들어간 만큼 다시 나가게 하는 것으로 
+    /// 블록을 지나갈 수 없도록 한다.
+    /// </summary>
+    /// <param name="blockPos"></param>
     private void MoveOutToField(Vector3 blockPos)
     {
         Vector3 direction = transform.position - blockPos;

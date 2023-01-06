@@ -30,6 +30,9 @@ public class BlockController : MonoBehaviour
         InputClick();
     }
 
+    /// <summary>
+    /// 입력에 맞춰 바꿀 블록의 타입(이하 현재 타입)을 지정한다.
+    /// </summary>
     private void InputBlockType()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
@@ -42,8 +45,14 @@ public class BlockController : MonoBehaviour
             _curBlockType = BlockType.WALL;
     }
 
+    /// <summary>
+    /// 현재 타입을 MAX로 되돌린다.
+    /// </summary>
     private void ResetBlockType() => _curBlockType = BlockType.MAX;
 
+    /// <summary>
+    /// 레이캐스트로 바꿀 블록을 지정한다.
+    /// </summary>
     private const float RAY_MAX_DISTANCE = Mathf.Infinity;
     private void InputClick()
     {

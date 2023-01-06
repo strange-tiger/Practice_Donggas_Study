@@ -39,6 +39,10 @@ public class Block : MonoBehaviour
         CurType = EBlockType.NONE;
     }
 
+    /// <summary>
+    /// 블록의 타입이 바뀌면 그에 맞춰 머테리얼을 바꾼다.
+    /// </summary>
+    /// <param name="type"></param>
     private void ChangeType(EBlockType type)
     {
         if (type == _curType) return;
