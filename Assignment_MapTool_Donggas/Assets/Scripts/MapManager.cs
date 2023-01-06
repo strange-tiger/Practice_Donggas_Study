@@ -72,7 +72,6 @@ public class MapManager : MonoBehaviour
 
         string saveJson = JsonUtility.ToJson(mapData, true);
         File.WriteAllText(_path, saveJson);
-        Debug.Log(saveJson);
     }
 
     /// <summary>
