@@ -9,6 +9,11 @@ namespace Define
 
     static public class PointTile
     {
-        public const float tileHeight = 0f;
+        public const float TILE_HEIGHT = 0f;
+    }
+
+    static public class Player
+    {
+        public const float PLAYER_SPEED = 2f;
     }
 }

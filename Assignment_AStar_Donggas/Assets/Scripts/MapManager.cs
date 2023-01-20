@@ -12,6 +12,7 @@ public class MapManager : MonoBehaviour
     [SerializeField] int playerPosZ;
 
     public bool[,] Map { get; private set; }
+    public int MapSize { get => mapSize; }
 
     private Stack<GameObject> obstaclePool;
     private Stack<GameObject> usedObstacles;
