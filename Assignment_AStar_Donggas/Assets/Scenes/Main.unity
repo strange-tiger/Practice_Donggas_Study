@@ -530,6 +530,7 @@ GameObject:
   - component: {fileID: 2107057275}
   - component: {fileID: 2107057277}
   - component: {fileID: 2107057278}
+  - component: {fileID: 2107057279}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -658,4 +659,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destSetter: {fileID: 2107057277}
+  pathfinding: {fileID: 2107057279}
   rigidboby: {fileID: 2107057275}
+--- !u!114 &2107057279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2107057270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0df3e100439793e45a7d04ec3edf5ea0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapManager: {fileID: 774971918}

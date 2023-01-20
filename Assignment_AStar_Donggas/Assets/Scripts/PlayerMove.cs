@@ -6,9 +6,10 @@ using Define;
 public class PlayerMove : MonoBehaviour
 {
     [SerializeField] DestinationSetter destSetter;
+    [SerializeField] Pathfinding pathfinding;
     [SerializeField] Rigidbody rigidboby;
 
-    public (int x, int z) CurrentTilePosition { get; private set; }
+    public (int x, int z) CurTilePos { get; private set; }
 
     private Coroutine currentCoroutine;
 
@@ -27,6 +28,8 @@ public class PlayerMove : MonoBehaviour
     {
         SetCurTilePosition();
 
+        Debug.Log(pathfinding.FindPath(CurTilePos, destination));
+
         if (currentCoroutine != null)
         {
             StopCoroutine(currentCoroutine);
@@ -39,7 +42,7 @@ public class PlayerMove : MonoBehaviour
         int tileX = Mathf.RoundToInt(transform.position.x);
         int tileZ = Mathf.RoundToInt(transform.position.z);
 
-        CurrentTilePosition = (tileX, tileZ);
+        CurTilePos = (tileX, tileZ);
         rigidboby.position = new Vector3(tileX, 0f, tileZ);
     }
 

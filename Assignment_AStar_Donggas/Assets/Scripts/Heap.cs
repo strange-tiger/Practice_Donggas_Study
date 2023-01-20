@@ -9,6 +9,24 @@ namespace MyHeap
         public (int x, int z) Position { get; private set; }
         public int Cost { get; private set; }
 
+        public MapNode((int x, int z) position, int cost)
+        {
+            Position = position;
+            Cost = cost;
+        }
+
+        public MapNode((int x, int z) position, int count, int heuristic)
+        {
+            Position = position;
+            Cost = Evaluate(count, heuristic);
+        }
+
+        public MapNode((int x, int z) position, int count, UnityEngine.Vector3 destination)
+        {
+            Position = position;
+            Cost = Evaluate(count, destination);
+        }
+
         public int Evaluate(int count, int heuristic)
         {
             Cost = count + heuristic;
@@ -18,11 +36,16 @@ namespace MyHeap
 
         public int Evaluate(int count, UnityEngine.Vector3 destination)
         {
-            int heuristic = Mathf.Abs((int)destination.x - Position.x) + Mathf.Abs((int)destination.z - Position.z);
-            
+            int heuristic = Manhattan(Position, destination);
+
             Cost = Evaluate(count, heuristic);
 
             return Cost;
+        }
+
+        static public int Manhattan((int x, int z) position, UnityEngine.Vector3 destination)
+        {
+            return Mathf.Abs((int)destination.x - position.x) + Mathf.Abs((int)destination.z - position.z);
         }
     }
 
@@ -31,9 +54,9 @@ namespace MyHeap
     {
         protected List<MapNode> container = new List<MapNode>();
 
-        public virtual int Top()
+        public virtual MapNode Top()
         {
-            return container[0].Cost;
+            return container[0];
         }
 
         public virtual bool Empty()
@@ -73,10 +96,10 @@ namespace MyHeap
             }
         }
 
-        public virtual int Pop()
+        public virtual MapNode Pop()
         {
             // 1. 반환할 값 저장
-            int top = Top();
+            MapNode top = Top();
 
             // 2. 마지막 노드를 루트 노드로 복사
             container[0] = container[Size() - 1];
