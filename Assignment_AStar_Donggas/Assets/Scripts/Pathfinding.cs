@@ -20,16 +20,12 @@ public class Pathfinding : MonoBehaviour
 
         curNode = new MapNode(start, count, destination);
 
-        //Debug.Log($"[Dest] {destination}");
-
         while (MapNode.Manhattan(curNode.Position, destination) != 0 
               && count < maxCount)
         {
             PutIntoAdjTiles(curNode.Position, destination);
 
             PutIntoPath();
-
-            //Debug.Log($"[Node] {curNode.Position.x}, {curNode.Position.z}");
         }
 
         if (count < maxCount)
@@ -77,7 +73,7 @@ public class Pathfinding : MonoBehaviour
 
                 if (newX < 0 || newX >= mapManager.MapSize
                     || newZ < 0 || newZ >= mapManager.MapSize
-                    || mapManager.Map[newX, newZ] || i == 0 || j == 0)
+                    || mapManager.Map[newX, newZ] || (i == 0 && j == 0))
                 {
                     continue;
                 }
