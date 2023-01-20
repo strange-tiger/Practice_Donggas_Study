@@ -2,19 +2,53 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MyHeap;
-using UnityEngine.XR;
-using UnityEngine.UIElements;
 
 public class Pathfinding : MonoBehaviour
 {
     [SerializeField] MapManager mapManager;
 
-    private Queue<MapNode> path = new Queue<MapNode>();
+    public Queue<MapNode> Path { get; private set; } = new Queue<MapNode>();
     private MapHeap potentialPath = new MapHeap();
 
     private MapNode curNode;
     private int count = 0;
     private int maxCount;
+
+    public bool FindPath((int x, int z) start, Vector3 destination)
+    {
+        InitializePath();
+
+        curNode = new MapNode(start, count, destination);
+
+        //Debug.Log($"[Dest] {destination}");
+
+        while (MapNode.Manhattan(curNode.Position, destination) != 0 
+              && count < maxCount)
+        {
+            PutIntoAdjTiles(curNode.Position, destination);
+
+            PutIntoPath();
+
+            //Debug.Log($"[Node] {curNode.Position.x}, {curNode.Position.z}");
+        }
+
+        if (count < maxCount)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private void InitializePath()
+    {
+        count = 0;
+        maxCount = mapManager.MapSize * mapManager.MapSize;
+        Path.Clear();
+        potentialPath.Clear();
+    }
 
     private void PutIntoPotentialPath((int x, int z) position, Vector3 destination)
     {
@@ -27,38 +61,9 @@ public class Pathfinding : MonoBehaviour
     {
         curNode = potentialPath.Pop();
         potentialPath.Clear();
-        path.Enqueue(curNode);
+        Path.Enqueue(curNode);
 
         ++count;
-    }
-
-    public bool FindPath((int x, int z) start, Vector3 destination)
-    {
-        count = 0;
-        maxCount = mapManager.MapSize * mapManager.MapSize;
-
-        curNode = new MapNode(start, count, destination);
-
-        Debug.Log($"[Dest] {destination}");
-
-        while (MapNode.Manhattan(curNode.Position, destination) != 0 
-              && count < maxCount)
-        {
-            PutIntoAdjTiles(curNode.Position, destination);
-
-            PutIntoPath();
-
-            Debug.Log($"[Node] {curNode.Position.x}, {curNode.Position.z}");
-        }
-
-        if (count < maxCount)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
     }
 
     private void PutIntoAdjTiles((int x, int z) center, Vector3 destination)

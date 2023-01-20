@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Define;
+using MyHeap;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -34,7 +35,7 @@ public class PlayerMove : MonoBehaviour
         {
             StopCoroutine(currentCoroutine);
         }
-        currentCoroutine = StartCoroutine(moveToDestination(destination));
+        currentCoroutine = StartCoroutine(moveByPath(pathfinding.Path));
     }
 
     private void SetCurTilePosition()
@@ -46,18 +47,30 @@ public class PlayerMove : MonoBehaviour
         rigidboby.position = new Vector3(tileX, 0f, tileZ);
     }
 
-    private IEnumerator moveToDestination(Vector3 destination)
+    private IEnumerator moveByPath(Queue<MapNode> path)
     {
-        Vector3 direction = Player.PLAYER_SPEED * (destination - rigidboby.position);
-
         float elapsedTime = 0f;
-        while (elapsedTime < 1f)
+        Vector3 destination = Vector3.zero;
+        Vector3 direction;
+        
+        while (path.Count > 0)
         {
-            yield return null;
-            
-            elapsedTime += Player.PLAYER_SPEED * Time.deltaTime;
+            (int x, int z) temp = path.Dequeue().Position;
+            destination.x = (float)temp.x;
+            destination.z = (float)temp.z;
 
-            rigidboby.MovePosition(rigidboby.position + Time.deltaTime * direction);
+            direction = Player.PLAYER_SPEED * (destination - rigidboby.position);
+
+            while (elapsedTime < 1f)
+            {
+                yield return null;
+
+                elapsedTime += Player.PLAYER_SPEED * Time.deltaTime;
+
+                rigidboby.MovePosition(rigidboby.position + Time.deltaTime * direction);
+            }
+
+            elapsedTime -= 1f;
         }
     }
 }
