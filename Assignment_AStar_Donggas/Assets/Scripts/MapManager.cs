@@ -93,4 +93,19 @@ public class MapManager : MonoBehaviour
         obstacle.transform.position = new Vector3(x, 0, z);
         obstacle.SetActive(true);
     }
+
+    public void Reset()
+    {
+        while (usedObstacles.Count > 0)
+        {
+            obstaclePool.Push(usedObstacles.Pop());
+        }
+
+        InitMap();
+    }
+
+    public (int x, int z) SendInitPlayerPos()
+    {
+        return (playerPosX, playerPosZ);
+    }
 }

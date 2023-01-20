@@ -6,6 +6,11 @@ public class DestinationMarker : MonoBehaviour
 {
     private void Awake()
     {
+        Reset();
+    }
+
+    public void Reset()
+    {
         gameObject.SetActive(false);
     }
 

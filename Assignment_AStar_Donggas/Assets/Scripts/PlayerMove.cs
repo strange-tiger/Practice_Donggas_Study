@@ -14,6 +14,13 @@ public class PlayerMove : MonoBehaviour
 
     private Coroutine currentCoroutine;
 
+    public void Reset((int x, int z) pos)
+    {
+        CurTilePos = pos;
+
+        rigidboby.position = new Vector3(pos.x, 0f, pos.z);
+    }
+
     private void OnEnable()
     {
         destSetter.DestinationChanged -= Move;

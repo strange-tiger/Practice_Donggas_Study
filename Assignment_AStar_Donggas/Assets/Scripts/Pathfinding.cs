@@ -16,7 +16,7 @@ public class Pathfinding : MonoBehaviour
 
     public bool FindPath((int x, int z) start, Vector3 destination)
     {
-        InitializePath();
+        Reset();
 
         curNode = new MapNode(start, count, destination);
 
@@ -38,7 +38,7 @@ public class Pathfinding : MonoBehaviour
         }
     }
 
-    private void InitializePath()
+    public void Reset()
     {
         count = 0;
         maxCount = mapManager.MapSize * mapManager.MapSize;
