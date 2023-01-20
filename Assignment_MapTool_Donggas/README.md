@@ -1,11 +1,6 @@
 # Practice_Donggas_Study
  돈까스 스터디 과제 & 연습을 위한 레포지토리
 
-## Assignment_MapTool_Donggas
- 구현 과제 : 자동 턴 배틀
-
-다음 사항을 구현 : 그외 사항은 알아서 구현 가능
-
 ## 구현 과제 1 [맵툴 만들기 - 1] 2023.01.04 수요일
 
 - [맵툴 만들기 - 1](https://www.notion.so/1-2022-01-04-40f401336e7e447d8355db29a94cccef)
