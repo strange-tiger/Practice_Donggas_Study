@@ -48,9 +48,17 @@ public class Pathfinding : MonoBehaviour
 
     private void PutIntoPotentialPath((int x, int z) position, Vector3 destination)
     {
-        MapNode node = new MapNode(position, count, destination);
+        foreach (MapNode node in Path)
+        {
+            if (position == node.Position)
+            {
+                return;
+            }
+        }
+        
+        MapNode pathNode = new MapNode(position, count, destination);
 
-        potentialPath.Push(node);
+        potentialPath.Push(pathNode);
     }
 
     private void PutIntoPath()
