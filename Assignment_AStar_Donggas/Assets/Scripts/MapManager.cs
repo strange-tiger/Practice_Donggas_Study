@@ -27,12 +27,12 @@ public class MapManager : MonoBehaviour
         obstaclePool = new Stack<GameObject>();
         usedObstacles = new Stack<GameObject>();
 
-        CreateObstaclePool();
+        InitObstaclePool();
 
-        InitializeMap();
+        InitMap();
     }
 
-    private void CreateObstaclePool()
+    private void InitObstaclePool()
     {
         for (int i = 0; i < mapSize * mapSize; ++i)
         {
@@ -43,7 +43,7 @@ public class MapManager : MonoBehaviour
         }
     }
     
-    private void InitializeMap()
+    private void InitMap()
     {
         for (int i = 0; i < map.GetLength(0); ++i)
         {
