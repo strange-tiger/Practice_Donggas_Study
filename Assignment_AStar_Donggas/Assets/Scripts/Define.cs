@@ -14,6 +14,6 @@ namespace Define
 
     static public class Player
     {
-        public const float PLAYER_SPEED = 2f;
+        public const float PLAYER_SPEED = 4f;
     }
 }

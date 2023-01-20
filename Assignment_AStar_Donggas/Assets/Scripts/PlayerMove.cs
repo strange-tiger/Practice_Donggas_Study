@@ -45,7 +45,7 @@ public class PlayerMove : MonoBehaviour
 
     private IEnumerator moveToDestination(Vector3 destination)
     {
-        Vector3 direction = Player.PLAYER_SPEED * Time.deltaTime * (destination - rigidboby.position);
+        Vector3 direction = Player.PLAYER_SPEED * (destination - rigidboby.position);
 
         float elapsedTime = 0f;
         while (elapsedTime < 1f)
@@ -54,7 +54,7 @@ public class PlayerMove : MonoBehaviour
             
             elapsedTime += Player.PLAYER_SPEED * Time.deltaTime;
 
-            rigidboby.MovePosition(rigidboby.position + direction);
+            rigidboby.MovePosition(rigidboby.position + Time.deltaTime * direction);
         }
     }
 }
